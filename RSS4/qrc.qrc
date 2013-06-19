@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/Qml">
+        <file>ScrollBar.qml</file>
+        <file>BusyIndicator.qml</file>
+        <file>CategoriesModel.qml</file>
+        <file>ComboBox.qml</file>
+        <file>ComboBoxButton.qml</file>
+        <file>NewsDelegate.qml</file>
+        <file>main.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>scrollbar.png</file>
+        <file>arrow-down.png</file>
+        <file>minus-icon.png</file>
+        <file>plus-icon.png</file>
+        <file>busy.png</file>
+    </qresource>
+</RCC>
