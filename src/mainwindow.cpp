@@ -4,11 +4,10 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    //Включаем наш QML
+    //Р’РєР»СЋС‡Р°РµРј РЅР°С€ QML
     ui = new QDeclarativeView;
     db = QSqlDatabase::addDatabase("QSQLITE");
-    QDir file;
-    db.setDatabaseName(file.absolutePath()+"/rssFeeds.s3db");
+    db.setDatabaseName(QDir::homePath() + QDir::separator() + "rssFeeds.s3db");
     model = new TreeModel;
     QObject::connect(model,SIGNAL(quite()),this,SLOT(on_TreeModel_quite()));
     if(db.open())
@@ -98,7 +97,7 @@ void MainWindow::addFeed()
 
 MainWindow::~MainWindow()
 {
-    //Удаляем QML
+    //РЈРґР°Р»СЏРµРј QML
     delete ui;
 }
 

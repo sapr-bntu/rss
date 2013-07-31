@@ -4,13 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += core gui declarative\
-            sql\
+QT       += core \
+            gui \
+            declarative \
+            sql \
             network \
             webkit \
             xml
 
-TARGET = RSS4
+TARGET = qmlRssReader
 TEMPLATE = app
 
 
@@ -32,5 +34,5 @@ OTHER_FILES += \
     CategoriesModel.qml
 
 RESOURCES += \
-    qrc.qrc
+    resources.qrc
 
