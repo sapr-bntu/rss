@@ -4,15 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core \
-            gui \
-            declarative \
-            sql \
+QT       += core gui declarative\
+            sql\
             network \
             webkit \
             xml
 
-TARGET = qmlRssReader
+TARGET = RSS4
 TEMPLATE = app
 
 
@@ -31,8 +29,11 @@ OTHER_FILES += \
     BusyIndicator.qml \
     ComboBox.qml \
     ComboBoxButton.qml \
-    CategoriesModel.qml
+    Buttons.qml \
+    FeedModel.qml \
+    TreeView.qml \
+    RssNews.qml
 
 RESOURCES += \
-    resources.qrc
+    qrc.qrc
 

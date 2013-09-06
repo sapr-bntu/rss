@@ -1,5 +1,6 @@
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
+import Qt 4.7
 
 Rectangle {
     id: mainWin
@@ -11,210 +12,38 @@ Rectangle {
     property string currentFeed: ""
     property bool loading: feedModel.status == XmlListModel.Loading
 
-    XmlListModel {id: feedModel
-        source: "http://"+mainWin.currentFeed
-        query: "/rss/channel/item"
-
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "link"; query: "link/string()" }
-        XmlRole { name: "description"; query: "description/string()" }
+    FeedModel{id: feedModel
     }
 
-    ListView {id: treeView       
+    TreeView{id: treeView
         width: 200
         height: 400
-        ScrollBar {
-            scrollArea: treeView; height: treeView.height; width: 8
-            anchors.right: treeView.right
-        }
-        //Задаем делегата
-        delegate: treeDelegate
-        //Задаем модель, этот объект позже придет из C++
-        model: treeModel
-        //Компонент делегата
-        Component {
-            id: treeDelegate
-            Item {
-                id: wrapper
-                height: 48
-                width: treeView.width
-
-                //Полоска для отделения элементов друг от друга
-                Rectangle {
-                    height: 1
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    color: "#d0d0d0"
-                }
-                //"Отбой" слева элементов-потомков
-                Item {
-                    id: levelMarginElement
-                    //Начиная с 6 уровня вложенности не сдвигаем потомков,
-                    //так как иначе можно получить очень широкое окно
-                    width: (level>5?6:level)*32 + 5
-                    anchors.left: parent.left
-                }
-                //Область для открытия/закрытия потомков.
-                //На листьях не виден
-                Item {
-                    id: nodeOpenElement
-                    anchors.left: levelMarginElement.right
-                    anchors.verticalCenter: wrapper.verticalCenter
-                    height: 48
-                    state: "leafNode"
-                    Image {
-                        id: triangleOpenImage
-                        //Отлавливаем нажатие мышкой и открываем/закрываем элемент
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                (isOpened) ? treeModel.closeItem(index) : treeModel.openItem(index);
-                            }
-                        }
-                    }
-                    states: [
-                        //Лист
-                        //Область не видна
-                        State {
-                            name: "leafNode"
-                            when: !hasChildren
-                            PropertyChanges {
-                                target: nodeOpenElement
-                                visible: false
-                                width: 0
-                            }
-                        },
-                        //Открытый элемент
-                        //Область видна и отображена соответствующая иконка
-                        State {
-                            name: "openedNode"
-                            when: (hasChildren)&&(isOpened)
-                            PropertyChanges {
-                                target: nodeOpenElement
-                                visible: true
-                                width: 48
-                            }
-
-                            PropertyChanges
-                            {
-                                target: triangleOpenImage
-                                source: "qrc:/images/minus-icon.png"
-                            }
-                        },
-                        //Закрытый элемент
-                        //Область видна и отображена соответствующая иконка
-                        State {
-                            name: "closedNode"
-                            when: (hasChildren)&&(!isOpened)
-                            PropertyChanges {
-                                target: nodeOpenElement
-                                visible: true
-                                width: 48
-                            }
-                            PropertyChanges {
-                                target: triangleOpenImage
-                                source: "qrc:/images/plus-icon.png"
-                            }
-                        }
-                    ]
-                }
-                //Область для отображения данных элемента
-                Text {id: nameTextElement
-                    text: name
-                    verticalAlignment: "AlignVCenter"
-                    anchors.left: nodeOpenElement.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.right: parent.right
-                    color: if(!hasChildren) index == treeView.currentIndex ? "#d40000" : "Black"
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: {
-                            if(!hasChildren)
-                            {
-                                mainWin.currentFeed = feed;
-                                treeView.currentIndex = index;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Rectangle {id: buttonExit
-            anchors.left: parent.bottom
-            y: treeView.height+10+(mainWin.height-(treeView.height+10))/2
-            width: treeView.width
-            height: (mainWin.height-(treeView.height+10))/2
-            color:  buttonExitmouseArea ? "#d40000" : "#6d5e5e"
-            gradient: Gradient {
-                GradientStop {
-                    position: 0.00;
-                    color: "#6d5e5e";
-                }
-                GradientStop {
-                    position: 1.00;
-                    color: "#ffffff";
-                }
-            }
-            z: 2
-            border.width: 3
-            border.color: "#a3a3b3"
-            Text {
-                id: buttonExitText
-                text: "Exit"
-                anchors.centerIn: parent;
-            }
-            MouseArea {
-                id: buttonExitmouseArea
-                anchors.fill: parent
-                onClicked: {treeModel.quite();}
-
-            }
-        }
     }
 
-    ListView {id: rssNews
+    RssNews{id: rssNews
         x: treeView.width
         y: 0
         width: mainWin.width - treeView.width
         height: mainWin.height
-        model: feedModel
-        delegate: NewsDelegate{}
-        ScrollBar {
-            scrollArea: rssNews; height: rssNews.height; width: 8
-            anchors.right: rssNews.right
-        }
-        BusyIndicator
-        {
-            scale: 2
-            on:  mainWin.loading
-            anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
-        }
-
     }
-
-    Rectangle {id: buttonAdd
-        anchors.left: parent.bottom
+    Buttons {id: buttonExit
+        y: treeView.height+10+(mainWin.height-(treeView.height+10))/2
+        width: treeView.width
+        height: (mainWin.height-(treeView.height+10))/2
+        Text {
+            id: buttonExitText
+            anchors.centerIn: parent;
+            text: "Exit"
+        }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {treeModel.quite();}
+        }
+    }
+    Buttons {id: buttonAdd
         y: treeView.height+5
         width: treeView.width
         height: (mainWin.height-(treeView.height+10))/2
-        color: buttonAddmouseArea.pressed ? "#d40000" : "#6d5e5e"
-        gradient: Gradient {
-            GradientStop {
-                position: 0.00;
-                color: "#6d5e5e";
-            }
-            GradientStop {
-                position: 1.00;
-                color: "#ffffff";
-            }
-        }
-        z: 2
-        border.width: 3
-        border.color: "#a3a3b3"
         Text {
             id: buttonAddLabel
             text: "Edit feeds"
@@ -231,26 +60,11 @@ Rectangle {
         }
     }
 
-    Rectangle {id: buttonReturn
-        anchors.left: parent.bottom
+    Buttons {id: buttonReturn
         y: 450
         width: 150
         height: 50
         opacity: 0
-        color: "#6d5e5e"
-        gradient: Gradient {
-            GradientStop {
-                position: 0.00;
-                color: "#6d5e5e";
-            }
-            GradientStop {
-                position: 1.00;
-                color: "#ffffff";
-            }
-        }
-        z: 2
-        border.width: 3
-        border.color: "#a3a3b3"
         Text {
             id: buttonReturnLabel
             text: "Return to news"
@@ -651,6 +465,10 @@ Rectangle {
                 opacity: 0
 
             }
+            PropertyChanges{
+                target: buttonExit
+                opacity:1
+            }
 
         },
         State {
@@ -705,6 +523,10 @@ Rectangle {
             PropertyChanges{
                 target: delcategoryRow
                 opacity: 1
+            }
+            PropertyChanges{
+                target: buttonExit
+                opacity:0
             }
         }
 

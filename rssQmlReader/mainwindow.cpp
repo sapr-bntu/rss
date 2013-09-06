@@ -1,20 +1,70 @@
 #include "mainwindow.h"
 #include <QDebug>
+#include "QFile"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    //Р’РєР»СЋС‡Р°РµРј РЅР°С€ QML
+    //Включаем наш QML
     ui = new QDeclarativeView;
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(QDir::homePath() + QDir::separator() + "rssFeeds.s3db");
+    QDir file;
     model = new TreeModel;
-    QObject::connect(model,SIGNAL(quite()),this,SLOT(on_TreeModel_quite()));
-    if(db.open())
+
+    if(QFile::exists(file.absolutePath()+"/rssFeeds.s3db"))
     {
-        model->SetDataBase(db);
-        model->AddFeedsItem();
-        model->AddFeeds();
+        db.setDatabaseName(file.absolutePath()+"/rssFeeds.s3db");
+        QObject::connect(model,SIGNAL(quite()),this,SLOT(on_TreeModel_quite()));
+        if (db.open())
+        {
+            QSqlQuery *query = new QSqlQuery(db);
+            if (!query->exec("select * from sqlite_master where type = 'table' and tbl_name = 'category'"))
+            {
+                query->exec("CREATE TABLE [category] ([Category] VARCHAR (0, 50))");
+                query->exec("insert into category values ('World')");
+                query->exec("insert into category values ('Europe')");
+                query->exec("insert into category values ('Politics')");
+                query->exec("insert into category values ('Business')");
+                query->exec("insert into category values ('Technology')");
+                query->exec("insert into category values ('Entertainment')");
+                query->exec("insert into category values ('Health')");
+                query->exec("insert into category values ('Sciense')");
+                query->exec("insert into category values ('Sport')");
+                query->exec("insert into category values ('Other')");
+            }
+            if (!query->exec("select * from sqlite_master where type = 'table' and tbl_name = 'main'"))
+            {
+                query->exec("CREATE TABLE [main] ([feed] VARCHAR (80), [Category] VARCHAR (20), [Name] VARCHAR (15), PRIMARY KEY ([feed], [Name]))");
+            }
+            model->SetDataBase(db);
+            model->AddFeedsItem();
+            model->AddFeeds();
+        }
+    }
+    else
+    {
+        db.setDatabaseName(file.absolutePath()+"/rssFeeds.s3db");
+        QObject::connect(model,SIGNAL(quite()),this,SLOT(on_TreeModel_quite()));
+
+        if (db.open())
+        {
+            QSqlQuery *query = new QSqlQuery(db);
+            query->exec("CREATE TABLE [category] ([Category] VARCHAR (0, 50))");
+            query->exec("CREATE TABLE [main] ([feed] VARCHAR (80), [Category] VARCHAR (20), [Name] VARCHAR (15), PRIMARY KEY ([feed], [Name]))");
+            query->exec("insert into category values ('World')");
+            query->exec("insert into category values ('Europe')");
+            query->exec("insert into category values ('Politics')");
+            query->exec("insert into category values ('Business')");
+            query->exec("insert into category values ('Technology')");
+            query->exec("insert into category values ('Entertainment')");
+            query->exec("insert into category values ('Health')");
+            query->exec("insert into category values ('Sciense')");
+            query->exec("insert into category values ('Sport')");
+            query->exec("insert into category values ('Other')");
+            model->SetDataBase(db);
+            model->AddFeedsItem();
+            model->AddFeeds();
+        }
     }
     ui->setSource(QUrl("qrc:/Qml/main.qml"));
     Root = ui->rootObject();
@@ -97,7 +147,7 @@ void MainWindow::addFeed()
 
 MainWindow::~MainWindow()
 {
-    //РЈРґР°Р»СЏРµРј QML
+    //Удаляем QML
     delete ui;
 }
 
