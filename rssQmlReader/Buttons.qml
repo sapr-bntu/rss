@@ -4,6 +4,8 @@ import QtQuick 1.1
 Rectangle {
     anchors.left: parent.bottom
     color:  buttonmouseArea ? "#d40000" : "#6d5e5e"
+   // Rectangle.radius: 5
+    radius: 17
     gradient: Gradient {
         GradientStop {
             position: 0.00;
@@ -17,7 +19,4 @@ Rectangle {
     z: 2
     border.width: 3
     border.color: "#a3a3b3"
-    MouseArea {
-        id: buttonmouseArea
-    }
 }

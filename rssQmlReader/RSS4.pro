@@ -32,7 +32,9 @@ OTHER_FILES += \
     Buttons.qml \
     FeedModel.qml \
     TreeView.qml \
-    RssNews.qml
+    RssNews.qml \
+    IORect.qml \
+    IOtext.qml
 
 RESOURCES += \
     qrc.qrc
