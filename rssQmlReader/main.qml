@@ -1,6 +1,6 @@
 // import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
-import Qt 4.7
+
 
 Rectangle {
     id: mainWin
@@ -97,16 +97,9 @@ Rectangle {
         }
         IORect {
             id: feedinputRect //Имя строки ввода
+            nameobj: "feedinput"
             width: 250
-            height: 30
 
-
-            IOtext {
-
-                id: feedinput
-                objectName: "feedinput"
-
-            }
         }
         Text
         {
@@ -114,13 +107,8 @@ Rectangle {
         }
         IORect {
             id: feedNameinputRect //Имя строки ввода
-            width: 80
-            height: 30
+            nameobj: "feedNameinput"
 
-            IOtext {
-                id: feedNameinput
-                objectName: "feedNameinput"
-            }
         }
 
         Text
@@ -129,13 +117,8 @@ Rectangle {
         }
         IORect {
             id: feedCategoryinputRect //Имя строки ввода
-            width: 80
-            height: 30
+            nameobj: "feedCategoryinput"
 
-            IOtext {
-                id: feedCategoryinput
-                objectName: "feedCategoryinput"
-            }
         }
         Buttons{
             id: addOk
@@ -149,8 +132,8 @@ Rectangle {
                 anchors.fill: parent
                 onClicked:
                 {
-                     if (mouse.button === Qt.LeftButton)
-                         window.addFeed();
+                    if (mouse.button === Qt.LeftButton)
+                        window.addFeed();
                 }
             }
         }
@@ -169,13 +152,9 @@ Rectangle {
         }
         IORect {
             id: nameinputRect //Имя строки ввода
+            nameobj: "nameinput"
             width: 350
-            height: 30
 
-            IOtext {
-                id: nameinput
-                objectName: "nameinput"
-            }
         }
 
         Buttons{
@@ -211,13 +190,9 @@ Rectangle {
         }
         IORect {
             id: nameinputRect1 //Имя строки ввода
+            nameobj: "nameinput1"
             width: 350
-            height: 30
 
-            IOtext {
-                id: nameinput1
-                objectName: "nameinput1"
-            }
         }
 
         Buttons{
@@ -253,12 +228,9 @@ Rectangle {
         }
         IORect {
             id: nameinputRect2 //Имя строки ввода
+            nameobj: "nameinput2"
             width: 350
-            height: 30
-            IOtext {
-                id: nameinput2
-                objectName: "nameinput2"
-            }
+
         }
 
         Buttons{

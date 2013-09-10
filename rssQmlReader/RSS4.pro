@@ -33,8 +33,7 @@ OTHER_FILES += \
     FeedModel.qml \
     TreeView.qml \
     RssNews.qml \
-    IORect.qml \
-    IOtext.qml
+    IORect.qml
 
 RESOURCES += \
     qrc.qrc

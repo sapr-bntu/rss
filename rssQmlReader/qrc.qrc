@@ -12,7 +12,6 @@
         <file>RssNews.qml</file>
         <file>TreeView.qml</file>
         <file>IORect.qml</file>
-        <file>IOtext.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>scrollbar.png</file>
